@@ -30,7 +30,7 @@ class ENCODER(nn.Module):
 
 class ENCODER1(nn.Module):
 
-    def __init__(self, in_feat_dim, codebook_dim, hidden_dim=128, num_res_blocks=0, batch_norm=1):
+    def __init__(self, in_feat_dim=3, codebook_dim=128, hidden_dim=128, num_res_blocks=0, batch_norm=1):
         super().__init__()
         blocks = [
             nn.Conv2d(in_feat_dim, hidden_dim // 2, kernel_size=3, stride=2, padding=1,dtype=torch.float32),

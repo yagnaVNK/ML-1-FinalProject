@@ -1,1 +1,13 @@
-{}
+input_feat_dim: 1
+ze_dim: 128
+enc_hidden_dim: 16
+dec_hidden_dim: 16
+num_res_blocks: 1
+lr: 0.0004
+decay: true
+clip_grads: false
+layer: 0
+Cos_coeff: 0.7
+batch_norm: 1
+reset_choice: 1
+cos_reset: 0

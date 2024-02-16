@@ -135,7 +135,7 @@ if __name__ == '__main__':
         logger = TensorBoardLogger(f"tb_logs", name=f"No_Norm_HQA_Sig_1D_{codebook_init}_BN{batch_norm}_reset{reset_choice}_res{num_res_blocks}_cosReset{cos_reset}_Cos{Cos_coeff}_KL{KL_coeff}_C{CL_coeff}_Classes6_e{EPOCHS}_iq{num_iq_samples}_codebookSlots{codebook_slots}_codebookDim{codebook_dim}_{layers}layer_version_{version}")
         
         trainer = pl.Trainer(max_epochs=EPOCHS, 
-             logger=logger,  
+             logger=None,  
              devices=1,
              accelerator = 'gpu',
              num_sanity_val_steps=0,
@@ -148,6 +148,6 @@ if __name__ == '__main__':
         print(f'saved the model as {model_save_path}')
         print('==========================================')
 
-        print(hae)
+        #print(hae)
     #hqa_model = torch.load(model_save_path)
 

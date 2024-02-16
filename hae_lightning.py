@@ -49,7 +49,7 @@ class HAE(pl.LightningModule):
         self.layer = layer
         self.Cos_coeff = torch.tensor(Cos_coeff)
         self.cos_reset = cos_reset
-
+        self.automatic_optimization =False
 
 
     def forward(self, x, soft = True):
@@ -69,12 +69,13 @@ class HAE(pl.LightningModule):
         z_e = self.encoder(z_e_lower)
         #z_q, indices, kl, commit_loss = self.codebook(z_e)
         z_e_lower_tilde = self.decoder(z_e)
-        cos_loss=torch.max(1-F.cosine_similarity(z_e_lower, z_e_lower_tilde, dim = 1),torch.zeros(z_e_lower.shape[0], z_e_lower.shape[2], device=self.device)).sum(dim=1).mean()
+        
+        cos_loss=torch.max(1-F.cosine_similarity(z_e_lower, z_e_lower_tilde, dim = 1),torch.zeros(z_e_lower.shape[0], z_e_lower.shape[2], z_e_lower.shape[2], device=self.device)).sum(dim=1).mean()
         return cos_loss
 
     def val_cos_loss(self,x):
         z_e_lower_tilde, z_e_lower, z_e =self(x, soft=False)
-        cos_loss=torch.max(1-F.cosine_similarity(z_e_lower, z_e_lower_tilde, dim = 1),torch.zeros(z_e_lower.shape[0], z_e_lower.shape[2], device=self.device)).sum(dim=1).mean()
+        cos_loss=torch.max(1-F.cosine_similarity(z_e_lower, z_e_lower_tilde, dim = 1),torch.zeros(z_e_lower.shape[0], z_e_lower.shape[2], z_e_lower.shape[2], device=self.device)).sum(dim=1).mean()
         return cos_loss
 
 
@@ -155,7 +156,6 @@ class HAE(pl.LightningModule):
         else:
             with torch.no_grad():
                 z_e_lower = self.prev_model.encode(x)
-                z_e_lower = self.normalize(z_e_lower)
             return z_e_lower
     def encode(self, x):
         with torch.no_grad():
@@ -171,9 +171,8 @@ class HAE(pl.LightningModule):
     def decode(self, z_q):
         with torch.no_grad():
             if self.prev_model is not None:
-                z_e_u = self.normalize.unnorm(self.decoder(z_q))
-                z_q_lower_tilde = self.prev_model.quantize(z_e_u)
-                recon = self.decode_lower(z_q_lower_tilde)
+                z_e_u = self.decoder(z_q)
+                recon = self.decode_lower(z_e_u)
             else:
                 recon = self.decoder(z_q)
         return recon
