@@ -57,13 +57,9 @@ class DECODER1(nn.Module):
 class Upsample(nn.Module):
 
     def __init__(self, scale_factor=2):
-
         super().__init__()
-
         self.scale_factor = scale_factor
 
 
-
     def forward(self, x):
-
         return F.interpolate(x, scale_factor=self.scale_factor)
