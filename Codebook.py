@@ -18,13 +18,17 @@ class VQCodebook(nn.Module):
         assert feat_dim == self.codebook_dim
         z_e = z_e.permute(0, 2, 3, 1).contiguous()
         z_e_flat = z_e.view(bs * w * h, feat_dim)
+
         codebook_sqr = torch.sum(self.codebook ** 2, dim=1)
         z_e_flat_sqr = torch.sum(z_e_flat ** 2, dim=1, keepdim=True)
 
         distances = torch.addmm(
             codebook_sqr + z_e_flat_sqr, z_e_flat, self.codebook.t(), alpha=-2.0, beta=1.0
         )
-
+        #print("z_e_flat ",z_e_flat.shape)
+        #print("codebook_sqr ",codebook_sqr.shape)
+        #print("z_e_flat_sqr ",z_e_flat_sqr.shape)
+        #print("distances ",distances.shape)s
         if soft is True:
             dist = RelaxedOneHotCategorical(self.temperature, logits=-distances)
             soft_onehot = dist.rsample()
